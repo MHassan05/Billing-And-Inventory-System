@@ -22,15 +22,15 @@ A simple Inventory Management System built with Python. This application allows 
 
 2. **Set up virtual environment**
   ```bash
-  python -m venv venv
-  source venv/bin/activate        # On Linux/macOS
-  venv\Scripts\activate           # On Windows
+python -m venv venv
+source venv/bin/activate        # On Linux/macOS
+venv\Scripts\activate           # On Windows
   ```
 3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
-4. **Ready To Run**
+5. **Ready To Run**
    Finally, type `python3 main.py`.
 
 ## Printing Receipts
