@@ -1,5 +1,6 @@
 # Billing-And-Inventory-System
-InventoryManager is a desktop application built with Python and PyQt5 for managing retail shop inventory. It supports adding items, tracking stock, and printing receipts using PDF, thermal, or regular printers. The system also organizes data in structured folders and provides a user-friendly interface.
+
+A simple Inventory Management System built with Python. This application allows users to manage products, update stock, generate receipts, and more — all through a user-friendly interface.
 
 ## Features
 
@@ -15,14 +16,15 @@ InventoryManager is a desktop application built with Python and PyQt5 for managi
 
 1. **Clone the repository**
    ```bash
-   git clone [https://github.com/MHassan05/Billing-And-Inventory-System.git](https://github.com/MHassan05/Billing-And-Inventory-System.git)
+   git clone https://github.com/MHassan05/Billing-And-Inventory-System.git
    cd Billing-And-Inventory-System
    ```
 
 2. **Set up virtual environment**
   ```bash
   python -m venv venv
-  source venv/bin/activate  # On Windows: venv\Scripts\activate
+  source venv/bin/activate        # On Linux/macOS
+  venv\Scripts\activate           # On Windows
   ```
 3. **Install dependencies**
    ```bash
@@ -52,7 +54,7 @@ Contributions are welcome! Feel free to **fork the repository** and submit a **p
 ## Contact
 
 **Muhammad Hassan**  
-📧 [Muhammad Hassan](mh873030@gmail.com)  
+📧 [mh873030@gmail.com]  
 🔗 [My GitHub Profile](https://github.com/MHassan05)
 
 
