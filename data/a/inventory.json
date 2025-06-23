@@ -1,0 +1,27 @@
+[
+    {
+        "name": "GP",
+        "categories": [
+            "Engine Oil",
+            "Lubricant"
+        ],
+        "quantity": 119,
+        "price": 800.0
+    },
+    {
+        "name": "GP 2",
+        "categories": [
+            "Lubricant"
+        ],
+        "quantity": 99,
+        "price": 10000.0
+    },
+    {
+        "name": "GP 3",
+        "categories": [
+            "Engine Oil"
+        ],
+        "quantity": 119,
+        "price": 0.0
+    }
+]

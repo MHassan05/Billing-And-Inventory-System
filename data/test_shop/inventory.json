@@ -1,0 +1,10 @@
+[
+    {
+        "name": "123",
+        "categories": [
+            "check"
+        ],
+        "quantity": 12,
+        "price": 123.0
+    }
+]
