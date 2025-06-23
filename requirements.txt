@@ -21,3 +21,4 @@ setuptools==80.9.0
 six==1.17.0
 tzdata==2025.2
 viivakoodi==0.8.0
+WMI==1.4.9
