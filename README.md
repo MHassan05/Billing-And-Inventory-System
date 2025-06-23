@@ -12,6 +12,20 @@ A simple Inventory Management System built with Python. This application allows 
 - User-friendly GUI `PyQt5`
 - Packaged as a standalone `.exe` using PyInstaller ( to be implemented )
 
+## Project Structure
+```
+inventory_system/
+├── src/                        # Python source code
+├── data/                       # Application data folder
+│ ├── shop_name/                # Folder for a specific shop's data
+│ │ └── bills/                  # Contains generated receipt files (PDF, TXT, etc.)
+│ ├── inventory.json            # Stores current inventory data
+│ ├── shop_info.json            # Stores shop name, address, and other details
+│ └── exported_files(.XLSX)     # Contains Excel files generated from inventory
+├── requirements.txt            # Python dependencies
+└── README.md                   # Project documentation
+```
+
 ## Installation
 
 1. **Clone the repository**
