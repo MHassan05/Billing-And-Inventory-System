@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Item 1",
+        "categories": [
+            "Test Category 2"
+        ],
+        "quantity": 0,
+        "price": 10.0
+    },
+    {
+        "name": "Test Item 2",
+        "categories": [
+            "Test Category 2"
+        ],
+        "quantity": 2,
+        "price": 10.0
+    },
+    {
+        "name": "Test Item 3",
+        "categories": [
+            "Test Category 1"
+        ],
+        "quantity": 7,
+        "price": 10.0
+    }
+]

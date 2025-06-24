@@ -7,13 +7,22 @@ import sys
 import json
 import os
 import shutil
+from path_utilis import get_base_path  
 
 # Get the directory where the script is located
 # SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# DATA_DIR = os.path.join(SCRIPT_DIR, "data")
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)  # One level up from 'src'
-DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+# PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)  # One level up from 'src'
+# DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+# def get_base_path():
+#     if getattr(sys, 'frozen', False):
+#         # We're in a PyInstaller bundle
+#         return sys._MEIPASS
+#     return os.path.dirname(os.path.abspath(__file__))
+
+# DATA_DIR = os.path.join(get_base_path(), "data")
+DATA_DIR = os.path.join(get_base_path(), 'data')
+
+
 
 class CreateShop(QMainWindow):
     # Signal to notify when shop is created/updated

@@ -237,6 +237,13 @@ class PrinterDetectionThread(QThread):
         
         return system_printers
 
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        # PyInstaller: use the temp extraction directory
+        return sys._MEIPASS
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 class PrintReceiptDialog(QDialog):
     def __init__(self, shop_data, cart_data, shop_folder, parent=None):
         super().__init__(parent)
@@ -246,9 +253,13 @@ class PrintReceiptDialog(QDialog):
         self.detected_printers = {}
         
         # Get the project structure paths
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
-        self.data_dir = os.path.join(project_root, "data")
+        # script_dir = os.path.dirname(os.path.abspath(__file__))
+        # project_root = os.path.dirname(script_dir)
+        # self.data_dir = os.path.join(project_root, "data")
+        # self.shop_dir = os.path.join(self.data_dir, self.shop_folder)
+        # self.bills_dir = os.path.join(self.shop_dir, "bills")
+        base_path = get_base_path()
+        self.data_dir = os.path.join(base_path, "data")
         self.shop_dir = os.path.join(self.data_dir, self.shop_folder)
         self.bills_dir = os.path.join(self.shop_dir, "bills")
         
@@ -259,6 +270,8 @@ class PrintReceiptDialog(QDialog):
         
     def setup_ui(self):
         self.setWindowTitle("Print Receipt")
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setMinimumSize(800, 600)
         self.showMaximized()
         
         layout = QVBoxLayout()
@@ -507,13 +520,13 @@ class PrintReceiptDialog(QDialog):
         if not ESCPOS_AVAILABLE:
             QMessageBox.warning(self, "Not Available", 
                               "ESC/POS library not installed. Please install python-escpos.")
-            return
+            return False
         
         printer_config = self.get_selected_printer_config()
         if not printer_config:
             QMessageBox.warning(self, "No Printer Selected", 
                               "Please select a printer or enter manual configuration.")
-            return
+            return False
         
         try:
             # Create printer instance based on configuration
@@ -569,10 +582,12 @@ class PrintReceiptDialog(QDialog):
             p.close()
             
             QMessageBox.information(self, "Success", "Receipt printed successfully!")
+            return True
             
         except Exception as e:
             QMessageBox.critical(self, "Printing Error", 
                                f"Failed to print receipt:\n{str(e)}")
+        return False
     
     # ... (rest of the methods remain the same as in your original code)
     def update_preview(self):
@@ -671,28 +686,49 @@ class PrintReceiptDialog(QDialog):
         printer_type = self.printer_combo.currentText()
         
         try:
+            success = False
+            
             if printer_type == "Save as PDF":
-                self.save_as_pdf()
+                success = self.save_as_pdf()
             elif "Thermal" in printer_type:
-                self.print_thermal()
+                success = self.print_thermal()
             else:
-                self.print_regular()
+                success = self.print_regular()
             
-            # Only show success message for regular printing
-            if printer_type == "Regular Printer":
-                QMessageBox.information(self, "Success", "Receipt processed successfully!")
-            
-            self.accept()
-            
+            if success:
+                if printer_type == "Regular Printer":
+                    QMessageBox.information(self, "Success", "Receipt processed successfully!")
+                self.accept()  # Only accept if successful
+            else:
+                return 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to process receipt: {str(e)}")
+            return 
+
+        # printer_type = self.printer_combo.currentText()
+        
+        # try:
+        #     if printer_type == "Save as PDF":
+        #         self.save_as_pdf()
+        #     elif "Thermal" in printer_type:
+        #         self.print_thermal()
+        #     else:
+        #         self.print_regular()
+            
+        #     # Only show success message for regular printing
+        #     if printer_type == "Regular Printer":
+        #         QMessageBox.information(self, "Success", "Receipt processed successfully!")
+            
+        #     self.accept()
+            
+        # except Exception as e:
+        #     QMessageBox.critical(self, "Error", f"Failed to process receipt: {str(e)}")
     
     def save_as_pdf(self):
         """Save receipt as PDF"""
         if not REPORTLAB_AVAILABLE:
             # Fallback to simple text file
-            self.save_as_text_file()
-            return
+            return self.save_as_text_file()
         
         receipt_no = self.get_next_receipt_number()
         
@@ -708,7 +744,7 @@ class PrintReceiptDialog(QDialog):
         )
         
         if not filename:
-            return
+            return False
         
         # Create PDF (implementation remains the same as your original code)
         QMessageBox.information(
@@ -716,11 +752,44 @@ class PrintReceiptDialog(QDialog):
             "PDF Saved Successfully", 
             f"Receipt saved successfully!\n\nLocation: {filename}"
         )
+        return True 
     
     def save_as_text_file(self):
         """Fallback: Save as text file when reportlab is not available"""
-        # Implementation remains the same as your original code
-        pass
+        try:
+            receipt_no = self.get_next_receipt_number()
+            
+            # Show file dialog to let user choose where to save
+            default_filename = f"{receipt_no}.txt"
+            default_path = os.path.join(self.bills_dir, default_filename)
+            
+            filename, _ = QFileDialog.getSaveFileName(
+                self,
+                "Save Receipt As Text File",
+                default_path,
+                "Text Files (*.txt);;All Files (*)"
+            )
+            
+            if not filename:
+                return False  # User cancelled
+            
+            # Generate receipt text
+            receipt_text = self.generate_receipt_text()
+            
+            # Write to file
+            with open(filename, 'w', encoding='utf-8') as file:
+                file.write(receipt_text)
+            
+            QMessageBox.information(
+                self, 
+                "Text File Saved Successfully", 
+                f"Receipt saved successfully!\n\nLocation: {filename}"
+            )
+            return True
+            
+        except Exception as e:
+            QMessageBox.critical(self, "Save Error", f"Failed to save receipt as text file:\n{str(e)}")
+            return False
     
     def print_regular(self):
         """Print using regular printer"""
@@ -733,11 +802,13 @@ class PrintReceiptDialog(QDialog):
             document = QTextDocument()
             document.setPlainText(receipt_text)
             document.print_(printer)
+            return True
+        return False
         
 def show_print_receipt_dialog(inventory_manager, cart_data):
     """Main function to show print receipt dialog from inventory manager"""
     
-    if not cart_data or all (not item for item in cart_data):
+    if not cart_data or all(not item for item in cart_data):
         QMessageBox.warning(inventory_manager, "Empty Cart", "Please add items to cart before printing receipt.")
         return
     
@@ -749,8 +820,8 @@ def show_print_receipt_dialog(inventory_manager, cart_data):
             inventory_manager.shop_folder,
             inventory_manager
         )
-        print_dialog.exec_()
-        return True
+        result = print_dialog.exec_()
+        return result == QDialog.Accepted
     except Exception as e:
         print(f"Error! {e}")
         return False

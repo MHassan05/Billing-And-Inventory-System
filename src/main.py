@@ -9,11 +9,13 @@ import shutil
 import sys
 import create_new_shop
 from inventory_manager import InventoryManager
+from path_utilis import get_base_path
 
 # Get the directory where the script is located
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)  # Go up from 'src/' to project root
-DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+# SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)  # Go up from 'src/' to project root
+# DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+DATA_DIR = os.path.join(get_base_path(), 'data')
 
 class ClickableWidget(QWidget):
     clicked = pyqtSignal()
@@ -97,8 +99,8 @@ class EntranceForm(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Inventory Management System - Shop Selection")
-        self.showMaximized()
         self.setMinimumSize(450, 450)
+        self.showMaximized()
         self.selected_widget = None  # Track currently selected widget
 
         central_widget = QWidget()
